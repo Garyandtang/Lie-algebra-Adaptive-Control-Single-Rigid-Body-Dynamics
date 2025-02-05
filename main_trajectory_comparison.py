@@ -53,7 +53,7 @@ def trajectory_comparison():
                                 actual_error_multiplier=1,
                                 rls_lam=None)
     ourEnv.reset(rng)
-    ourEnv.prime(data_size, lti.K0, exitaiton, rng, lti)
+    ourEnv.prime(data_size, lti.K0, exitaiton, rng, config, lti)
     I_hat = ourEnv.I_hat
     m_hat = ourEnv.m_hat
     update_lti_config = {'fixed_param': True,
@@ -79,7 +79,7 @@ def trajectory_comparison():
                       actual_error_multiplier=1,
                       rls_lam=None)
     ofuEnv.reset(rng)
-    ofuEnv.prime(data_size, lti.K0, exitaiton, rng, lti)
+    ofuEnv.prime(data_size, lti.K0, exitaiton, rng, config, lti)
     K = ofuEnv._current_K
     lti.update_controller(K)
     ofu_traj, _ = evaluation(False, lti, config)
@@ -100,7 +100,7 @@ def trajectory_comparison():
                         actual_error_multiplier=1,
                         rls_lam=None)
     tsEnv.reset(rng)
-    tsEnv.prime(data_size, lti.K0, exitaiton, rng, lti)
+    tsEnv.prime(data_size, lti.K0, exitaiton, rng, config, lti)
     K = tsEnv._current_K
     lti.update_controller(K)
     ts_traj, _ = evaluation(False, lti, config)

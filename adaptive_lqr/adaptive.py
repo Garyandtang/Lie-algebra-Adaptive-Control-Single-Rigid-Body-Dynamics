@@ -139,7 +139,7 @@ class AdaptiveMethod(ABC):
         self.estimated_l = None
         self.estimated_r = None
 
-    def prime(self, num_iterations, static_feedback, excitation, rng, lti):
+    def prime(self, num_iterations, static_feedback, excitation, rng, config, lti):
         """Initialize the adaptive method with rollouts
 
         Must be called after reset() and before step() is called
@@ -150,12 +150,13 @@ class AdaptiveMethod(ABC):
         assert excitation > 0
 
         rng = self._get_rng(rng)
-        config = {'type': TrajType.CONSTANT,
-                  'param': {'start_state': np.array([0, 0, 0, 0, 0, 0, 1]),
-                            'linear_vel': np.array([2, 0, 0.2]),
-                            'angular_vel': np.array([0, 0, 1]),
-                            'dt': lti.dt,
-                            'nTraj': num_iterations}}
+        # config = {'type': TrajType.CONSTANT,
+        #           'param': {'start_state': np.array([0, 0, 0, 0, 0, 0, 1]),
+        #                     'linear_vel': np.array([2, 0, 0.2]),
+        #                     'angular_vel': np.array([0, 0, 1]),
+        #                     'dt': lti.dt,
+        #                     'nTraj': num_iterations}}
+        config['param']['nTraj'] = num_iterations
         planner = SE3Planner(config)
         ref_SE3, ref_twist, dt = planner.generate_constant_traj(config['param'])
 

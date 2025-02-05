@@ -62,7 +62,7 @@ def single_test():
                                 actual_error_multiplier=1,
                                 rls_lam=None)
     ourEnv.reset(rng)
-    ourEnv.prime(1500, lti.K0, 5, rng, lti)
+    ourEnv.prime(1500, lti.K0, 5, rng, config, lti)
     I_hat = ourEnv.I_hat
     m_hat = ourEnv.m_hat
     lti_config = {'fixed_param': True,

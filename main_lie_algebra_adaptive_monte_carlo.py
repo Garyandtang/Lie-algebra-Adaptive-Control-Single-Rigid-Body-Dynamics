@@ -12,7 +12,20 @@ import time
 def MonteCarloSimulation():
     totalSim = 50
     step_vector = np.array([0, 200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000])
-    # step_vector = np.array([0, 200, 400])
+    step_vector = np.array([0, 200, 400])
+
+    # reference trajectory setup
+    v = np.array([2, 0, 0.2])
+    w = np.array([0, 0, 1])
+    config = {'type': TrajType.CONSTANT,
+              'param': {'start_state': np.array([0, 0, 0, 0, 0, 0, 1]),
+                        'linear_vel': v,
+                        'angular_vel': w,
+                        'dt': 0.02,
+                        'nTraj': 301}}
+
+    planner = SE3Planner(config)
+    ref_SE3, ref_twist, dt = planner.get_traj()
     I_error = np.zeros((totalSim, len(step_vector)))
     m_error = np.zeros((totalSim, len(step_vector)))
     times = np.zeros((totalSim, len(step_vector)))
@@ -26,8 +39,8 @@ def MonteCarloSimulation():
             lti_config = {'fixed_param': False,
                             'I': I_star,
                             'm': m_star,
-                            'v': np.array([2, 0, 0.2]),
-                            'w': np.array([0, 0, 1])}
+                            'v': v,
+                            'w': w}
             lti = LinearSE3ErrorDynamics(lti_config)
             if data_size == 0:
                 I_hat = lti.I
@@ -48,7 +61,7 @@ def MonteCarloSimulation():
                         actual_error_multiplier=1,
                         rls_lam=None)
                 ourEnv.reset(rng)
-                ourEnv.prime(data_size, lti.K0, 5, rng, lti)
+                ourEnv.prime(data_size, lti.K0, 5, rng, config, lti)
                 I_hat = ourEnv.I_hat
                 m_hat = ourEnv.m_hat
             times[sim, i] = time.time() - start_time
